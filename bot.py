@@ -3,7 +3,9 @@ from flask import Flask, request
 import telebot
 
 # ضع التوكن السري الخاص بك هنا مباشرة بين علامتي التنصيص:
-BOT_TOKEN = "اكتب_التوكن_الخاص_بك_هنا"
+BOT_TOKEN = " Here is the token for bot TheebScan Bot @TheebScanBot:
+
+8611270909:AAHiDyDpMsVAc8IPVXDrVT8-pQUNsFYc24U"
 WEBHOOK_URL = "https://onrender.com" 
 
 bot = telebot.TeleBot(BOT_TOKEN)
