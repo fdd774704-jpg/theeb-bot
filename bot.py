@@ -1,10 +1,10 @@
-port os
+import os
 from flask import Flask, request
 import telebot
 
-# ضع التوكن الجديد هنا مباشرة بدون أي مسافات في البداية
-BOT_TOKEN ="البوت الحقيقي"
-WEBHOOK_URL = "https://theeb-bot-1.onrender.com" 
+# ضع التوكن السري الخاص بك هنا مباشرة بين علامتي التنصيص:
+BOT_TOKEN = "اكتب_التوكن_الخاص_بك_هنا"
+WEBHOOK_URL = "https://onrender.com" 
 
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
@@ -25,4 +25,5 @@ if __name__ == "__main__":
     bot.set_webhook(url=WEBHOOK_URL + '/' + BOT_TOKEN)
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
