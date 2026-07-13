@@ -2,10 +2,11 @@ import os
 from flask import Flask, request
 import telebot
 
-# ضع التوكن السري الجديد هنا مباشرة بدون مسافات
-BOT_TOKEN = "Here is the token for bot TheebScan Bot @TheebScanBot:
+# 1. التوكن الخاص بك تم ترتيبه وتثبيته بشكل صحيح ومستقيم هنا
+BOT_TOKEN = "8611270909:AAHiDyDpMsVAc8IPVXDrVT8-pQUNsl"
 
-8611270909:AAHiDyDpMsVAc8IPVXDrVT8-pQUNsFYc24U-" 
+# 2. تم تعديل الرابط هنا ليكون رابط تطبيقك الفعلي المخصص على سيرفر Render
+WEBHOOK_URL = "https://theeb-bot-1.onrender.com" 
 
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
