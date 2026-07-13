@@ -27,4 +27,5 @@ if __name__ == "__main__":
     bot.set_webhook(url=WEBHOOK_URL + '/' + BOT_TOKEN)
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+# تعديل بسيط للتجربة
 
