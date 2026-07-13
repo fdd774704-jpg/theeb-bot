@@ -1,33 +1,28 @@
-import telebot, requests, zipfile, sys
+import os
+from flask import Flask, request
+import telebot
 
-BOT_TOKEN = "   8611270909:AAGUPPLRHD1oa9YVCjTpF-1qJgxFuoJh2RE" 
+# ضع التوكن الجديد هنا مباشرة بدون أي مسافات في البداية
+BOT_TOKEN = "التوكن_الجديد_هنا"
+WEBHOOK_URL = "https://theeb-bot-1.onrender.com" 
+
 bot = telebot.TeleBot(BOT_TOKEN)
+app = Flask(__name__)
 
-LIBRARY_URL = "https://drive.google.com/uc?export=download&id=15oLrJGYcNBn5KHcZDtuTi1W3vdi0Axhv"
-
-print("جاري تحميل مكتبة TheebScan...")
-r = requests.get(LIBRARY_URL)
-open("lib.zip", "wb").write(r.content)
-zipfile.ZipFile("lib.zip").extractall("./theebscan")
-print("تم تحميل المكتبة ✅")
-
-sys.path.append('./theebscan')
-from theebscan import TheebScan
-scanner = TheebScan()
+@app.route('/' + BOT_TOKEN, methods=['POST'])
+def get_message():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
 
 @bot.message_handler(commands=['start'])
-def start(message): 
-    bot.reply_to(message, "اهلاً بك يا طناف في بوت TheebScan 💰\nارسل رقم الحساب اللي تبي تفحصه")
+def send_welcome(message):
+    bot.reply_to(message, "أهلاً بك! تم تشغيل البوت بنجاح وأمان.")
 
-@bot.message_handler(func=lambda m: True)
-def scan_account(message):
-    account = message.text.strip()
-    bot.reply_to(message, f"جاري فحص الحساب: {account} ...")
-    try:
-        result = scanner.check(account)
-        bot.reply_to(message, f"نتيجة الفحص:\n{result}")
-    except Exception as e: 
-        bot.reply_to(message, f"صار خطأ: {e}")
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL + '/' + BOT_TOKEN)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 
-print("البوت شغال...")
-bot.infinity_polling()
