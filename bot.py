@@ -1,9 +1,9 @@
-import os
+port os
 from flask import Flask, request
 import telebot
 
 # ضع التوكن الجديد هنا مباشرة بدون أي مسافات في البداية
-BOT_TOKEN = "التوكن_الجديد_هنا"
+BOT_TOKEN ="البوت الحقيقي"
 WEBHOOK_URL = "https://theeb-bot-1.onrender.com" 
 
 bot = telebot.TeleBot(BOT_TOKEN)
