@@ -1,72 +1,34 @@
 import os
-import sys
-import zipfile
-import requests
+from flask import Flask, request
 import telebot
-from flask import Flask
-from threading import Thread
 
-# 1. تشغيل سيرفر وهمي في الخلفية لمنع منصة Render من إيقاف الخدمة
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "TheebScan is Live!"
-
-def run_flask():
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-
-# تشغيل خادم الويب في مسار منفصل
-Thread(target=run_flask).start()
-
-# 2. إعدادات البوت والتوكن الجديد النظيف
-BOT_TOKEN = "8611270909:AAHiDyDpMsVAc8lPVXDrVT8-pQUNsFYc24U"
+# التوكن الصحيح الخاص بك
+BOT_TOKEN = "811270909:AAHiDyDpMsVAc8lPVXDrVT8-pQUNsFYc24U"
 bot = telebot.TeleBot(BOT_TOKEN)
 
-LIBRARY_URL = "https://google.com"
+app = Flask(__name__)
 
-print("جاري تحميل مكتبة TheebScan...")
-try:
-    r = requests.get(LIBRARY_URL)
-    with open("lib.zip", "wb") as f:
-        f.write(r.content)
-    with zipfile.ZipFile("lib.zip") as z:
-        z.extractall("./theebscan")
-    print("تم تحميل المكتبة ✅")
-except Exception as e:
-    print(f"فشل تحميل المكتبة: {e}")
+# الصفحة الرئيسية للتأكد من عمل السيرفر
+@app.route('/')
+def index():
+    return "TheebScan is Live and Running!"
 
-sys.path.append('./theebscan')
-try:
-    from theebscan import TheebScan
-    scanner = TheebScan()
-except Exception as e:
-    print(f"خطأ في استيراد المكتبة: {e}")
-    scanner = None
+# استقبال الرسائل من تليجرام عبر Webhook
+@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+def respond():
+    update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
+    bot.process_new_updates([update])
+    return "OK", 200
 
+# أوامر البوت الأساسية
 @bot.message_handler(commands=['start'])
-def start(message): 
-    bot.reply_to(message, "أهلاً بك يا طناف في بوت TheebScan 💰\nارسل رقم الحساب الذي تريد فحصه.")
+def send_welcome(message):
+    bot.reply_to(message, "مرحباً بك! بوت TheebScan يعمل الآن بنجاح وبشكل مستقر 🚀")
 
-@bot.message_handler(func=lambda m: True)
-def scan_account(message):
-    account = message.text.strip()
-    bot.reply_to(message, f"جاري فحص الحساب: {account} ...")
-    
-    if not scanner:
-        bot.reply_to(message, "المكتبة غير جاهزة حالياً، يرجى المحاولة لاحقاً.")
-        return
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, f"وصلت رسالتك: {message.text}")
 
-    try:
-        result = scanner.check(account)
-        bot.reply_to(message, f"نتيجة الفحص:\n{result}")
-    except Exception as e: 
-        bot.reply_to(message, f"حدث خطأ أثناء الفحص: {e}")
-
-# 3. تشغيل البوت بنظام الفحص المستمر والآمن وتجاهل أخطاء الشبكة المؤقتة
-print("البوت يعمل الآن تلقائياً...")
-bot.infinity_polling(timeout=10, long_polling_timeout=5)
-
-
-
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
