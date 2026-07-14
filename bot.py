@@ -20,8 +20,8 @@ def run_flask():
 # تشغيل خادم الويب في مسار منفصل
 Thread(target=run_flask).start()
 
-# 2. إعدادات البوت والتوكن الخاص بك
-BOT_TOKEN = "8611270909:AAGUPPLRHD1oa9YVCjTpF-1qJgxFuoJh2RE"
+# 2. إعدادات البوت والتوكن الجديد النظيف
+BOT_TOKEN = "8611270909:AAHiDyDpMsVAc8lPVXDrVT8-pQUNsFYc24U"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 LIBRARY_URL = "https://google.com"
@@ -67,5 +67,6 @@ def scan_account(message):
 # 3. تشغيل البوت بنظام الفحص المستمر والآمن وتجاهل أخطاء الشبكة المؤقتة
 print("البوت يعمل الآن تلقائياً...")
 bot.infinity_polling(timeout=10, long_polling_timeout=5)
+
 
 
