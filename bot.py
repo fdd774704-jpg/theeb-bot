@@ -1,35 +1,55 @@
-os
-from flask import Flask, request
+import os
 import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from flask import Flask, request
 
-# التوكن الصحيح الخاص بك
-BOT_TOKEN = "BOT_TOKEN = os.environ.get("BOT_TOKEN")
-"
-bot = telebot.TeleBot(BOT_TOKEN)
+# جلب التوكن تلقائيًا من البيئة لضمان الأمان والتشغيل الصحيح
+TOKEN = os.environ.get("BOT_TOKEN")
+bot = telebot.TeleBot(TOKEN)
 
 app = Flask(__name__)
 
-# الصفحة الرئيسية للتأكد من عمل السيرفر
+# ============================
+#   رسالة /start الملكية
+# ============================
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = InlineKeyboardMarkup()
+    pay_button = InlineKeyboardButton(
+        text="👑 بوابة الدفع الملكية (VIP)",
+        url="https://paypal.me/TheebRoyalGate"
+    )
+    markup.add(pay_button)
+
+    bot.send_message(
+        message.chat.id,
+        "مرحبًا بك في بوابة الذيــب الملكية 👑\n\n"
+        "أنت هنا في المكان المخصص لكبار الشخصيات.\n"
+        "اضغط على زر الدفع الفاخر بالأسفل لتفعيل اشتراكك فورًا:",
+        reply_markup=markup
+    )
+
+# ============================
+#   إعداد الـ Webhook للسيرفر
+# ============================
+@app.route('/' + TOKEN if TOKEN else '', methods=['POST'])
+def webhook():
+    if request.headers.get('content-type') == 'application/json':
+        json_string = request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return "OK", 200
+    else:
+        return "Forbidden", 403
+
 @app.route('/')
 def index():
-    return "TheebScan is Live and Running!"
+    return "Theeb Royal Bot is Running 👑", 200
 
-# استقبال الرسائل من تليجرام عبر Webhook
-@app.route(f'/{BOT_TOKEN}', methods=['POST'])
-def respond():
-    update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
-    bot.process_new_updates([update])
-    return "OK", 200
-
-# أوامر البوت الأساسية
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    bot.reply_to(message, "مرحباً بك! بوت TheebScan يعمل الآن بنجاح وبشكل مستقر 🚀")
-
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-    bot.reply_to(message, f"وصلت رسالتك: {message.text}")
-
+# ============================
+#   تشغيل السيرفر على ريندر
+# ============================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
