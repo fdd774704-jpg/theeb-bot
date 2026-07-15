@@ -6,6 +6,7 @@ from flask import Flask, request
 # وضع التوكن الخاص بك مباشرة هنا ليعمل البوت فوراً وبدون تعقيد Render
 TOKEN = "8611270909:AAHiDyDpMsVAc8IPVXDrVT8-pQUNsFYc24U"
 bot = telebot.TeleBot(TOKEN)
+url = "https://paypal.me/TheebRoyalGate"
 
 app = Flask(__name__)
 
